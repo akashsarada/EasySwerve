@@ -5,14 +5,8 @@
 
 package org.troyargonauts.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.troyargonauts.robot.Constants.OperatorConstants;
-import org.troyargonauts.robot.commands.Autos;
-import org.troyargonauts.robot.commands.ExampleCommand;
-import org.troyargonauts.robot.subsystems.ExampleSubsystem;
-
 
 
 /**
@@ -24,11 +18,9 @@ import org.troyargonauts.robot.subsystems.ExampleSubsystem;
 public class RobotContainer
 {
     // The robot's subsystems and commands are defined here...
-    private final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
-    
+
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private final CommandXboxController driverController =
-            new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
     
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -50,24 +42,5 @@ public class RobotContainer
      */
     private void configureBindings()
     {
-        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-        new Trigger(exampleSubsystem::exampleCondition)
-                .onTrue(new ExampleCommand(exampleSubsystem));
-        
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-        // cancelling on release.
-        driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand());
-    }
-    
-    
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand()
-    {
-        // An example command will be run in autonomous
-        return Autos.exampleAuto(exampleSubsystem);
     }
 }

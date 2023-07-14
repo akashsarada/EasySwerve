@@ -15,8 +15,25 @@ package org.troyargonauts.robot;
  */
 public final class Constants
 {
-    public static class OperatorConstants
-    {
-        public static final int DRIVER_CONTROLLER_PORT = 0;
+
+    public interface SwerveCANIDs {
+        byte FRONT_LEFT_DRIVE = 0;
+        byte FRONT_LEFT_TURN = 1;
+        byte FRONT_RIGHT_DRIVE = 2;
+        byte FRONT_RIGHT_TURN = 3;
+        byte BACK_LEFT_DRIVE = 4;
+        byte BACK_LEFT_TURN = 5;
+        byte BACK_RIGHT_DRIVE = 6;
+        byte BACK_RIGHT_TURN = 7;
+    }
+
+    public interface SwervePID {
+        double DEFAULT_DRIVE_P = 0.1;
+        double DEFAULT_DRIVE_I = 0.0;
+        double DEFAULT_DRIVE_D = 0.0;
+
+        double DEFAULT_TURN_P = 0.1;
+        double DEFAULT_TURN_I = 0.0;
+        double DEFAULT_TURN_D = 0.0;
     }
 }
