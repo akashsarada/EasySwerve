@@ -4,7 +4,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.troyargonauts.common.util.motorcontrol.LazyCANSparkMax;
+import org.troyargonauts.common.motors.MotorCreation;
+import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
 import org.troyargonauts.robot.Constants;
 
 public class SwerveMotors extends SubsystemBase {
@@ -19,6 +20,7 @@ public class SwerveMotors extends SubsystemBase {
 
     private final LazyCANSparkMax[] driveMotors;
     private final LazyCANSparkMax[] turnMotors;
+    private final LazyCANSparkMax[] allMotors;
 
     private double frontLeftAngle;
     private double frontRightAngle;
@@ -28,28 +30,29 @@ public class SwerveMotors extends SubsystemBase {
     private double desiredTargetAngle;
 
     public SwerveMotors() {
-        frontLeftDrive = new LazyCANSparkMax(Constants.SwerveCANIDs.FRONT_LEFT_DRIVE, CANSparkMax.MotorType.kBrushless);
-        frontLeftTurn = new LazyCANSparkMax(Constants.SwerveCANIDs.FRONT_LEFT_TURN, CANSparkMax.MotorType.kBrushless);
-        frontRightDrive = new LazyCANSparkMax(Constants.SwerveCANIDs.FRONT_RIGHT_DRIVE, CANSparkMax.MotorType.kBrushless);
-        frontRightTurn = new LazyCANSparkMax(Constants.SwerveCANIDs.FRONT_RIGHT_TURN, CANSparkMax.MotorType.kBrushless);
-        backLeftDrive = new LazyCANSparkMax(Constants.SwerveCANIDs.BACK_LEFT_DRIVE, CANSparkMax.MotorType.kBrushless);
-        backLeftTurn = new LazyCANSparkMax(Constants.SwerveCANIDs.BACK_LEFT_TURN, CANSparkMax.MotorType.kBrushless);
-        backRightDrive = new LazyCANSparkMax(Constants.SwerveCANIDs.BACK_RIGHT_DRIVE, CANSparkMax.MotorType.kBrushless);
-        backRightTurn = new LazyCANSparkMax(Constants.SwerveCANIDs.BACK_RIGHT_TURN, CANSparkMax.MotorType.kBrushless);
+        frontLeftDrive = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.FRONT_LEFT_DRIVE);
+        frontLeftTurn = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.FRONT_LEFT_TURN);
+        frontRightDrive = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.FRONT_RIGHT_DRIVE);
+        frontRightTurn = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.FRONT_RIGHT_TURN);
+        backLeftDrive = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.BACK_LEFT_DRIVE);
+        backLeftTurn = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.BACK_LEFT_TURN);
+        backRightDrive = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.BACK_RIGHT_DRIVE);
+        backRightTurn = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.BACK_RIGHT_TURN);
 
         driveMotors = new LazyCANSparkMax[]{frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive};
         turnMotors = new LazyCANSparkMax[]{frontLeftTurn, frontRightTurn, backLeftTurn, backRightTurn};
+        allMotors = new LazyCANSparkMax[]{frontLeftDrive, frontLeftTurn, frontRightDrive, frontRightTurn, backLeftDrive, backLeftTurn, backRightDrive, backRightTurn};
 
-        for (LazyCANSparkMax motor : driveMotors) {
-            motor.getPIDController().setP(Constants.SwervePID.DEFAULT_DRIVE_P);
-            motor.getPIDController().setI(Constants.SwervePID.DEFAULT_DRIVE_I);
-            motor.getPIDController().setD(Constants.SwervePID.DEFAULT_DRIVE_D);
+        for (LazyCANSparkMax motor : allMotors) {
+            motor.setInverted(false);
+            motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         }
-
         for (LazyCANSparkMax motor : turnMotors) {
-            motor.getPIDController().setP(Constants.SwervePID.DEFAULT_TURN_P);
-            motor.getPIDController().setI(Constants.SwervePID.DEFAULT_TURN_I);
-            motor.getPIDController().setD(Constants.SwervePID.DEFAULT_TURN_D);
+            motor.getPIDController().setP(Constants.SwervePID.DEFAULT_TURN_P, Constants.SwervePID.SLOT);
+            motor.getPIDController().setI(Constants.SwervePID.DEFAULT_TURN_I, Constants.SwervePID.SLOT);
+            motor.getPIDController().setD(Constants.SwervePID.DEFAULT_TURN_D, Constants.SwervePID.SLOT);
+            motor.getPIDController().setOutputRange(-1, 1);
+            motor.getPIDController().setSmartMotionAllowedClosedLoopError(Constants.SwervePID.DEFAULT_TURN_TOLERANCE, Constants.SwervePID.SLOT);
         }
 
         desiredTargetAngle = 0;
@@ -65,7 +68,7 @@ public class SwerveMotors extends SubsystemBase {
 
     public void run() {
         for (LazyCANSparkMax motor : turnMotors) {
-            motor.getPIDController().setReference(desiredTargetAngle, CANSparkMax.ControlType.kPosition);
+            motor.getPIDController().setReference(desiredTargetAngle, CANSparkMax.ControlType.kPosition, Constants.SwervePID.SLOT);
         }
     }
 
@@ -85,6 +88,10 @@ public class SwerveMotors extends SubsystemBase {
 
     public LazyCANSparkMax[] getTurnMotors() {
         return turnMotors;
+    }
+
+    public LazyCANSparkMax[] getAllMotors() {
+        return allMotors;
     }
 }
 

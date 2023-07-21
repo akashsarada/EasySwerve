@@ -28,6 +28,7 @@ public final class Constants
     }
 
     public interface SwervePID {
+        int SLOT = 0;
         double DEFAULT_DRIVE_P = 0.1;
         double DEFAULT_DRIVE_I = 0.0;
         double DEFAULT_DRIVE_D = 0.0;
@@ -35,5 +36,7 @@ public final class Constants
         double DEFAULT_TURN_P = 0.1;
         double DEFAULT_TURN_I = 0.0;
         double DEFAULT_TURN_D = 0.0;
+        double DEFAULT_TURN_TOLERANCE = 1;
+        double DEFAULT_TURN_MIN_SPEED = 0.05;
     }
 }
