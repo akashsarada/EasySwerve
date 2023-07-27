@@ -39,4 +39,11 @@ public final class Constants
         double DEFAULT_TURN_TOLERANCE = 1;
         double DEFAULT_TURN_MIN_SPEED = 0.05;
     }
+
+    public interface ControllerPorts {
+        int DRIVER_PORT = 0;
+        int OPERATOR_PORT = 1;
+
+        double DEADBAND = 0.1;
+    }
 }

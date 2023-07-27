@@ -8,7 +8,7 @@ package org.troyargonauts.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
+import org.troyargonauts.robot.subsystems.Swerve;
 
 
 /**
@@ -21,7 +21,8 @@ public class Robot extends TimedRobot
 {
     private Command autonomousCommand;
     
-    private RobotContainer robotContainer;
+    private static RobotContainer robotContainer;
+    private static Swerve swerve;
     
     
     /**
@@ -100,27 +101,18 @@ public class Robot extends TimedRobot
     /** This method is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {}
-    
-    
-    @Override
-    public void testInit()
-    {
-        // Cancels all running commands at the start of test mode.
-        CommandScheduler.getInstance().cancelAll();
+
+    public static RobotContainer getRobotContainer() {
+        if (robotContainer == null) {
+            robotContainer = new RobotContainer();
+        }
+        return robotContainer;
     }
-    
-    
-    /** This method is called periodically during test mode. */
-    @Override
-    public void testPeriodic() {}
-    
-    
-    /** This method is called once when the robot is first started up. */
-    @Override
-    public void simulationInit() {}
-    
-    
-    /** This method is called periodically whilst in simulation. */
-    @Override
-    public void simulationPeriodic() {}
+
+    public static Swerve getSwerve() {
+        if (swerve == null) {
+            swerve = new Swerve();
+        }
+        return swerve;
+    }
 }

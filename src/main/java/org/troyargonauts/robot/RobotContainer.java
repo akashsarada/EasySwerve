@@ -5,8 +5,13 @@
 
 package org.troyargonauts.robot;
 
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.troyargonauts.common.input.Gamepad;
+import org.troyargonauts.common.input.gamepads.Xbox;
+import org.troyargonauts.common.math.OMath;
+import org.troyargonauts.common.streams.IStream;
 
 
 /**
@@ -19,8 +24,9 @@ public class RobotContainer
 {
     // The robot's subsystems and commands are defined here...
 
-    // Replace with CommandPS4Controller or CommandJoystick if needed
-
+    // Replace with Gamepad Xbox Controllers
+    public final Gamepad driver = new Xbox(Constants.ControllerPorts.DRIVER_PORT);
+    public final Gamepad operator = new Xbox(Constants.ControllerPorts.OPERATOR_PORT);
     
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -42,5 +48,20 @@ public class RobotContainer
      */
     private void configureBindings()
     {
+
+        //Sets the Swerve Drive to the Inputs from the Driver Joysticks
+        Robot.getSwerve().setDefaultCommand(
+                new RunCommand(
+                        () -> {
+                            double forward = IStream.create(driver::getLeftY).filtered(x -> OMath.deadband(x, Constants.ControllerPorts.DEADBAND)).get();
+                            double strafe = IStream.create(driver::getLeftX).filtered(x -> OMath.deadband(x, Constants.ControllerPorts.DEADBAND)).get();
+                            double turn = IStream.create(driver::getRightX).filtered(x -> OMath.deadband(x, Constants.ControllerPorts.DEADBAND)).get();
+
+                            Robot.getSwerve().setSwerve(forward, strafe, turn);
+                        }, Robot.getSwerve()
+                )
+        );
+
+
     }
 }
