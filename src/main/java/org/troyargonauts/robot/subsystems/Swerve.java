@@ -2,6 +2,7 @@ package org.troyargonauts.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.common.math.Vector2D;
 import org.troyargonauts.common.motors.MotorCreation;
@@ -52,6 +53,11 @@ public class Swerve extends SubsystemBase {
         frontRightAngle = frontRightTurn.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
         backLeftAngle = backLeftTurn.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
         backRightAngle = backRightTurn.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
+
+        SmartDashboard.putNumber("Front Left Angle", frontLeftAngle);
+        SmartDashboard.putNumber("Front Right Angle", frontRightAngle);
+        SmartDashboard.putNumber("Back Left Angle", backLeftAngle);
+        SmartDashboard.putNumber("Back Right Angle", backRightAngle);
     }
 
     public void run() {
