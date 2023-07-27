@@ -162,17 +162,4 @@ public class Xbox extends Gamepad {
         });
         executor.shutdown();
     }
-
-    //Get degrees from Joystick
-    public double getDegrees(double xStick, double yStick) {
-        if (xStick > 0 && yStick >= 0) {
-            return xStick * 90;
-        } else if (xStick > 0 && yStick < 0) {
-            return xStick * 90 + 90;
-        } else if (xStick <= 0 && yStick < 0) {
-            return xStick * 90 + 180;
-        } else {
-            return xStick * 90 + 270;
-        }
-    }
 }

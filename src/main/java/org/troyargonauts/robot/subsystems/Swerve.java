@@ -89,13 +89,27 @@ public class Swerve extends SubsystemBase {
         return leftStickInputDistance + (turn / 2);
     }
 
-    private double calculateAngle(double degrees, double turn) {
-        return degrees + (turn * 45);
+    private double calculateAngle(double xStick, double yStick, double turnStick) {
+        double strafeAngle;
+
+        if (xStick > 0 && yStick >= 0) {
+            strafeAngle = xStick * 90;
+        } else if (xStick > 0 && yStick < 0) {
+            strafeAngle = xStick * 90 + 90;
+        } else if (xStick <= 0 && yStick < 0) {
+            strafeAngle = xStick * 90 + 180;
+        } else if (xStick < 0 && yStick >= 0) {
+            strafeAngle = xStick * 90 + 270;
+        } else {
+            strafeAngle = 0;
+        }
+
+        return strafeAngle + (turnStick * 45);
     }
 
     public void setSwerve(double forward, double strafe, double turn) {
         double power = calculatePower(forward, strafe, turn);
-        double angle = calculateAngle(strafe, turn);
+        double angle = calculateAngle(forward, strafe, turn);
 
         setPower(power);
         setAngle(angle);
