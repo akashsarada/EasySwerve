@@ -17,6 +17,8 @@ public class Swerve extends SubsystemBase {
     private double frontLeftAngle, frontRightAngle, backLeftAngle, backRightAngle;
     private double desiredTargetAngle;
 
+    private double[] turnPIDArray, drivePIDArray;
+
     public Swerve() {
         frontLeftDrive = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.FRONT_LEFT_DRIVE);
         frontLeftTurn = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.FRONT_LEFT_TURN);
@@ -45,6 +47,9 @@ public class Swerve extends SubsystemBase {
         }
 
         desiredTargetAngle = 0;
+
+        turnPIDArray = new double[]{Constants.SwervePID.DEFAULT_TURN_P, Constants.SwervePID.DEFAULT_TURN_I, Constants.SwervePID.DEFAULT_TURN_D};
+        drivePIDArray = new double[]{Constants.SwervePID.DEFAULT_DRIVE_P, Constants.SwervePID.DEFAULT_DRIVE_I, Constants.SwervePID.DEFAULT_DRIVE_D};
     }
 
     @Override
@@ -58,6 +63,9 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Front Right Angle", frontRightAngle);
         SmartDashboard.putNumber("Back Left Angle", backLeftAngle);
         SmartDashboard.putNumber("Back Right Angle", backRightAngle);
+
+        SmartDashboard.setDefaultNumberArray("SmartDashboard/Debug/Turn PID", turnPIDArray);
+        SmartDashboard.setDefaultNumberArray("SmartDashboard/Debug/Drive PID", drivePIDArray);
     }
 
     public void run() {
