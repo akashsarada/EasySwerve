@@ -1,20 +1,25 @@
 package org.troyargonauts.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.opencv.core.Mat;
 import org.troyargonauts.common.math.Vector2D;
 import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
+import org.troyargonauts.common.util.imu.Pigeon;
 import org.troyargonauts.robot.Constants;
+import org.troyargonauts.robot.Main;
 
 public class Swerve extends SubsystemBase {
     private final LazyCANSparkMax frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive;
     private final LazyCANSparkMax frontLeftTurn, frontRightTurn, backLeftTurn, backRightTurn;
     private final LazyCANSparkMax[] driveMotors, turnMotors, allMotors;
+    private final Pigeon2 pigeon;
 
-    private double frontLeftAngle, frontRightAngle, backLeftAngle, backRightAngle;
-    private double desiredTargetAngle;
+    private double frontLeftAngle, frontRightAngle, backLeftAngle, backRightAngle, pigeonCompass;
+    private double[] targetAngles;
 
     public Swerve() {
         frontLeftDrive = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.FRONT_LEFT_DRIVE);
@@ -26,13 +31,18 @@ public class Swerve extends SubsystemBase {
         backRightDrive = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.BACK_RIGHT_DRIVE);
         backRightTurn = MotorCreation.createDefaultSparkMax(Constants.SwerveCANIDs.BACK_RIGHT_TURN);
 
+        pigeon = new Pigeon2(Constants.SwerveCANIDs.PIGEON);
+
         driveMotors = new LazyCANSparkMax[]{frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive};
         turnMotors = new LazyCANSparkMax[]{frontLeftTurn, frontRightTurn, backLeftTurn, backRightTurn};
         allMotors = new LazyCANSparkMax[]{frontLeftDrive, frontLeftTurn, frontRightDrive, frontRightTurn, backLeftDrive, backLeftTurn, backRightDrive, backRightTurn};
 
+        targetAngles = new double[]{0,0,0,0};
+
         for (LazyCANSparkMax motor : allMotors) {
             motor.setInverted(false);
             motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+            motor.set(0);
         }
 
         for (LazyCANSparkMax motor : turnMotors) {
@@ -43,7 +53,8 @@ public class Swerve extends SubsystemBase {
             motor.getPIDController().setSmartMotionAllowedClosedLoopError(Constants.SwervePID.DEFAULT_TURN_TOLERANCE, Constants.SwervePID.SLOT);
         }
 
-        desiredTargetAngle = 0;
+        pigeon.configEnableCompass(true);
+        pigeon.setYawToCompass();
     }
 
     @Override
@@ -52,22 +63,29 @@ public class Swerve extends SubsystemBase {
         frontRightAngle = frontRightTurn.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
         backLeftAngle = backLeftTurn.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
         backRightAngle = backRightTurn.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
+
+        pigeonCompass = pigeon.getAbsoluteCompassHeading();
     }
 
     public void run() {
-        for (LazyCANSparkMax motor : turnMotors) {
-            motor.getPIDController().setReference(desiredTargetAngle, CANSparkMax.ControlType.kPosition, Constants.SwervePID.SLOT);
-        }
+        frontLeftTurn.getPIDController().setReference(targetAngles[0], CANSparkMax.ControlType.kPosition, Constants.SwervePID.SLOT);
+        frontRightTurn.getPIDController().setReference(targetAngles[1], CANSparkMax.ControlType.kPosition, Constants.SwervePID.SLOT);
+        backLeftTurn.getPIDController().setReference(targetAngles[2], CANSparkMax.ControlType.kPosition, Constants.SwervePID.SLOT);
+        backRightTurn.getPIDController().setReference(targetAngles[3], CANSparkMax.ControlType.kPosition, Constants.SwervePID.SLOT);
     }
 
-    private void setPower(double power) {
-        for (LazyCANSparkMax motor : driveMotors) {
-            motor.set(power);
-        }
+    private void setPower(double[] powers) {
+        frontLeftDrive.set(powers[0]);
+        frontRightDrive.set(powers[1]);
+        backLeftDrive.set(powers[2]);
+        backRightDrive.set(powers[2]);
     }
 
-    private void setAngle(double angle) {
-        desiredTargetAngle = angle;
+    private void setAngle(double[] angles) {
+        targetAngles[0] = angles[0];
+        targetAngles[1] = angles[1];
+        targetAngles[2] = angles[2];
+        targetAngles[3] = angles[3];
     }
 
     public LazyCANSparkMax[] getDriveMotors() {
@@ -82,23 +100,58 @@ public class Swerve extends SubsystemBase {
         return allMotors;
     }
 
-    private double calculatePower(double forward, double strafe, double turn) {
-        Vector2D leftStickInput = new Vector2D(strafe, forward);
-        double leftStickInputDistance = leftStickInput.distance();
+    public double fieldCentrifyForward (double robotAngle, double stickY, double stickX){
 
-        return leftStickInputDistance + (turn / 2);
+        return (stickY * Math.cos(pigeonCompass)) + (stickX * Math.sin(pigeonCompass));
+
     }
 
-    private double calculateAngle(double degrees, double turn) {
-        return degrees + (turn * 45);
+    public double fieldCentrifyStrafe (double stickY, double stickX, double robotAngle){
+
+        return (stickY * Math.sin(robotAngle)) + (stickX * Math.cos(robotAngle));
+
+    }
+
+
+    private double[] calculateCoefficients (double forward, double strafe, double turn) {
+        double[] coefficients = new double[4];
+
+        coefficients[0] = strafe - (turn * (Constants.RobotParameters.ROBOT_LENGTH / 2));
+        coefficients[1] = strafe + (turn * (Constants.RobotParameters.ROBOT_LENGTH / 2));
+        coefficients[2] = forward - (turn * (Constants.RobotParameters.ROBOT_WIDTH / 2));
+        coefficients[3] = forward + (turn * (Constants.RobotParameters.ROBOT_WIDTH / 2));
+
+        return coefficients;
+    }
+    private double[] calculatePower(double[] coefficients) {
+
+        double[] power = new double[4];
+
+        power[0] = Math.sqrt(Math.pow(coefficients[1], 2) + Math.pow(coefficients[2], 2));
+        power[1] = Math.sqrt(Math.pow(coefficients[1], 2) + Math.pow(coefficients[3], 2));
+        power[2] = Math.sqrt(Math.pow(coefficients[0], 2) + Math.pow(coefficients[3], 2));
+        power[3] = Math.sqrt(Math.pow(coefficients[0], 2) + Math.pow(coefficients[2], 2));
+
+        return power;
+
+    }
+
+    private double[] calculateAngle(double[] coefficients) {
+        double[] angle = new double[4];
+
+        angle[0] = Math.toDegrees(Math.atan2(coefficients[1], coefficients[2]));
+        angle[1] = Math.toDegrees(Math.atan2(coefficients[1], coefficients[3]));
+        angle[2] = Math.toDegrees(Math.atan2(coefficients[0], coefficients[3]));
+        angle[3] = Math.toDegrees(Math.atan2(coefficients[0], coefficients[2]));
+
+        return angle;
     }
 
     public void setSwerve(double forward, double strafe, double turn) {
-        double power = calculatePower(forward, strafe, turn);
-        double angle = calculateAngle(strafe, turn);
+        double[] coefficients = calculateCoefficients(fieldCentrifyForward(forward, strafe, pigeonCompass), fieldCentrifyStrafe(forward, strafe, pigeonCompass), turn);
 
-        setPower(power);
-        setAngle(angle);
+        setPower(calculatePower(coefficients));
+        setAngle(calculateAngle(coefficients));
     }
 }
 

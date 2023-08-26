@@ -25,6 +25,7 @@ public final class Constants
         byte BACK_LEFT_TURN = 5;
         byte BACK_RIGHT_DRIVE = 6;
         byte BACK_RIGHT_TURN = 7;
+        byte PIGEON = 11;
     }
 
     public interface SwervePID {
@@ -33,11 +34,16 @@ public final class Constants
         double DEFAULT_DRIVE_I = 0.0;
         double DEFAULT_DRIVE_D = 0.0;
 
-        double DEFAULT_TURN_P = 0.1;
+        double DEFAULT_TURN_P = 0.0002;
         double DEFAULT_TURN_I = 0.0;
         double DEFAULT_TURN_D = 0.0;
         double DEFAULT_TURN_TOLERANCE = 1;
         double DEFAULT_TURN_MIN_SPEED = 0.05;
+    }
+
+    public interface RobotParameters {
+        double ROBOT_WIDTH = 28;
+        double ROBOT_LENGTH = 28;
     }
 
     public interface ControllerPorts {
