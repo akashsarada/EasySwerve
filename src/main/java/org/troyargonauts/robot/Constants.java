@@ -44,6 +44,8 @@ public final class Constants
     public interface RobotParameters {
         double ROBOT_WIDTH = 28;
         double ROBOT_LENGTH = 28;
+
+        double ROBOT_DIAMETER = Math.sqrt(Math.pow(ROBOT_WIDTH,2) + Math.pow(ROBOT_LENGTH,2));
     }
 
     public interface ControllerPorts {
