@@ -2,11 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package org.troyargonauts.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.troyargonauts.robot.subsystems.Swerve;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -15,9 +16,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private static RobotContainer robotContainer;
+  private static Swerve swerve;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -25,9 +27,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    //Instantiate all subsystems before robotContainer
+    swerve = new Swerve();
+
+    // Instantiate our RobotContainer. This will perform all our button bindings, and put our autonomous chooser on the dashboard.
+    robotContainer = new RobotContainer();
+
   }
 
   /**
@@ -56,18 +61,11 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    autonomousCommand = robotContainer.getAutonomousCommand();
 
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    // schedule the autonomous command
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
     }
   }
 
@@ -77,12 +75,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    // This makes sure that the autonomous stops running when teleop starts running.
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
   }
 
@@ -99,4 +94,18 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  public RobotContainer getRobotContainer() {
+    if (robotContainer == null) {
+      robotContainer = new RobotContainer();
+    }
+    return robotContainer;
+  }
+
+  public static Swerve getSwerve() {
+    if (swerve == null) {
+      swerve = new Swerve();
+    }
+    return swerve;
+  }
 }
