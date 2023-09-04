@@ -13,7 +13,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -35,6 +34,7 @@ import java.util.List;
 public class RobotContainer {
   // The driver's controller
   private final Gamepad driver = new Xbox(OIConstants.DRIVER_CONTROLLER_PORT);
+  private final Gamepad operator = new Xbox(OIConstants.OPERATOR_CONTROLLER_PORT);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -84,8 +84,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        AutoConstants.MAX_SPEED_METERS_PER_SECOND,
+        AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.DRIVE_KINEMATICS);
 
@@ -100,7 +100,7 @@ public class RobotContainer {
         config);
 
     var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+        AutoConstants.P_THETA_CONTROLLER, 0, 0, AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
@@ -109,8 +109,8 @@ public class RobotContainer {
         DriveConstants.DRIVE_KINEMATICS,
 
         // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
+        new PIDController(AutoConstants.PX_CONTROLLER, 0, 0),
+        new PIDController(AutoConstants.PY_CONTROLLER, 0, 0),
         thetaController,
         Robot.getSwerve()::setModuleStates,
         Robot.getSwerve());

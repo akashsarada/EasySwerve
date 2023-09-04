@@ -60,8 +60,6 @@ public final class Constants {
     int REAR_RIGHT_TURNING_CAN_ID = 6;
 
     int PIGEON = 11;
-
-    boolean GYRO_REVERSED = false;
   }
 
   public interface OIConstants {
@@ -114,17 +112,17 @@ public final class Constants {
   }
 
   public interface AutoConstants {
-    double kMaxSpeedMetersPerSecond = 3;
-    double kMaxAccelerationMetersPerSecondSquared = 3;
-    double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    double MAX_SPEED_METERS_PER_SECOND = 3;
+    double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3;
+    double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI;
+    double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Math.PI;
 
-    double kPXController = 1;
-    double kPYController = 1;
-    double kPThetaController = 1;
+    double PX_CONTROLLER = 1;
+    double PY_CONTROLLER = 1;
+    double P_THETA_CONTROLLER = 1;
 
     // Constraint for the motion profiled robot angle controller
-    TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(
+            MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
   }
 }
