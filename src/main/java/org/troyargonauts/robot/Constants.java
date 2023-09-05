@@ -117,10 +117,18 @@ public final class Constants {
     double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI;
     double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Math.PI;
 
-    double PX_CONTROLLER = 1;
-    double PY_CONTROLLER = 1;
-    double P_THETA_CONTROLLER = 1;
+    //PID values for the Autonomous PID Controllers
+    double X_KP = 1;
+    double X_KI = 0;
+    double X_KD = 0;
 
+    double Y_KP = 1;
+    double Y_KI = 0;
+    double Y_KD = 0;
+
+    double THETA_KP = 1;
+    double THETA_KI = 0;
+    double THETA_KD = 0;
     // Constraint for the motion profiled robot angle controller
     TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(
             MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
