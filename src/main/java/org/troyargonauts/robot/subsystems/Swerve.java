@@ -5,6 +5,8 @@
 package org.troyargonauts.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,11 +15,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import org.troyargonauts.common.swerve.*;
 import org.troyargonauts.robot.Constants.*;
+import org.troyargonauts.robot.Robot;
 
 
 public class Swerve extends SubsystemBase {
@@ -237,5 +242,28 @@ public class Swerve extends SubsystemBase {
    */
   public double getHeading() {
     return Rotation2d.fromDegrees(Math.toDegrees(gyro.getYaw())).getDegrees();
+  }
+
+  //returns ProfiledPIDController as the theta controller for auton
+  public ProfiledPIDController getThetaController() {
+    ProfiledPIDController thetaController = new ProfiledPIDController(
+            AutoConstants.THETA_KP, AutoConstants.THETA_KI, AutoConstants.THETA_KD, AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    return thetaController;
+  }
+
+  //creates a new SwerveControllerCommand for auton
+  public SwerveControllerCommand driveToTrajectory(Trajectory trajectory) {
+    return new SwerveControllerCommand(
+            trajectory,
+            Robot.getSwerve()::getPose, // Functional interface to feed supplier
+            DriveConstants.DRIVE_KINEMATICS,
+
+            // Position controllers
+            new PIDController(AutoConstants.X_KP, AutoConstants.X_KI, AutoConstants.X_KD),
+            new PIDController(AutoConstants.Y_KP, AutoConstants.Y_KI, AutoConstants.Y_KD),
+            getThetaController(),
+            Robot.getSwerve()::setModuleStates,
+            Robot.getSwerve());
   }
 }

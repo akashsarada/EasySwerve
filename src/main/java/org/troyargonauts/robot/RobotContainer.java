@@ -90,26 +90,10 @@ public class RobotContainer {
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.DRIVE_KINEMATICS);
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.THETA_KP, AutoConstants.THETA_KI, AutoConstants.THETA_KD, AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        trajectory,
-        Robot.getSwerve()::getPose, // Functional interface to feed supplier
-        DriveConstants.DRIVE_KINEMATICS,
-
-        // Position controllers
-        new PIDController(AutoConstants.X_KP, AutoConstants.X_KI, AutoConstants.X_KD),
-        new PIDController(AutoConstants.Y_KP, AutoConstants.Y_KI, AutoConstants.Y_KD),
-        thetaController,
-        Robot.getSwerve()::setModuleStates,
-        Robot.getSwerve());
-
     // Reset odometry to the starting pose of the trajectory.
     Robot.getSwerve().resetOdometry(trajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> Robot.getSwerve().drive(0, 0, 0, false, false));
+    return Robot.getSwerve().driveToTrajectory(trajectory).andThen(() -> Robot.getSwerve().drive(0, 0, 0, false, false));
   }
 }
