@@ -5,11 +5,15 @@
 
 package org.troyargonauts.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import org.troyargonauts.robot.Constants.ControllerConstants;
+import org.troyargonauts.robot.commands.SwerveJoystickCmd;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import org.troyargonauts.common.input.Gamepad;
-import org.troyargonauts.common.input.gamepads.AutoGamepad;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,49 +21,58 @@ import org.troyargonauts.common.input.gamepads.AutoGamepad;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer
+{
+    // Replace with CommandPS4Controller or CommandJoystick if needed
+    private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.kDriverControllerPort);
 
-    public static final Gamepad driver = new AutoGamepad(Constants.Controllers.DRIVER);
-    public static final Gamepad operator = new AutoGamepad(Constants.Controllers.OPERATOR);
 
-    public RobotContainer() {
-        // Configure the button bindings
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer()
+    {
+        // Configure the trigger bindings
         configureBindings();
     }
 
+
     /**
-     * Use this method to define your controller->command mappings.
+     * Use this method to define your trigger->command mappings. Triggers can be created via the
+     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+     * predicate, or via the named factories in {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+     * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * joysticks}.
      */
-    private void configureBindings() {
-        //Example Joystick Input Command
-        //Pulled for Troy-Argonauts/Butters
-//            Robot.getDrivetrain().setDefaultCommand(
-//                    new RunCommand(
-//                            () -> {
-//                                double speed = IStream.create(driver::getLeftY)
-//                                        .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
-//                                        .get();
-//                                double angle = IStream.create(driver::getRightX)
-//                                        .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
-//                                        .get();
-//                                Robot.getDrivetrain().cheesyDrive(speed, angle, 1);
-//                            }, Robot.getDrivetrain()
-//                    )
-//            );
+    private void configureBindings()
+    {
+        Robot.getSwerve().setDefaultCommand(
+                new SwerveJoystickCmd(
+                        Robot.getSwerve(),
+                        () -> driverController.getLeftX(),
+                        () -> driverController.getLeftY(),
+                        () -> driverController.getRightX(),
+                        () -> driverController.a().getAsBoolean()
+                )
+        );
 
-        //Example Button Input Command
-        //Pulled for Troy-Argonauts/Butters
-//        driver.getRightBumper().whileTrue(
-//                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
-//                        .andThen(new InstantCommand(() -> getDriver().setRumble(1.0, 0.5)))
-//        );
+        driverController.b().onTrue(
+                new InstantCommand(
+                        () -> Robot.getSwerve().zeroHeading(),
+                        Robot.getSwerve()
+                )
+        );
     }
 
-    public static Gamepad getDriver() {
-        return driver;
-    }
 
-    public static Gamepad getOperator() {
-        return operator;
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand()
+    {
+        // An example command will be run in autonomous
+        return null;
     }
 }

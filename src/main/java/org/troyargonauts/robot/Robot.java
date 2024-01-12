@@ -5,20 +5,11 @@
 
 package org.troyargonauts.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import org.troyargonauts.robot.subsystems.*;
+import org.troyargonauts.robot.subsystems.SwerveSubsystem;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -26,55 +17,121 @@ import java.util.concurrent.TimeUnit;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
-    private final SendableChooser<Command> chooser = new SendableChooser<>();
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+public class Robot extends TimedRobot
+{
     private Command autonomousCommand;
 
+    private RobotContainer robotContainer;
 
+    private static SwerveSubsystem swerve;
+
+
+    /**
+     * This method is run when the robot is first started up and should be used for any
+     * initialization code.
+     */
     @Override
-    public void robotInit() {
-        LiveWindow.disableAllTelemetry();
-        LiveWindow.setEnabled(false);
+    public void robotInit()
+    {
+        // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+        // autonomous chooser on the dashboard.
+        robotContainer = new RobotContainer();
 
-        DataLogManager.start("/media/sda1/logs");
-
-        new RobotContainer();
-
-        CameraServer.startAutomaticCapture().setFPS(14);
-
-        SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.addOption("Nothing", new WaitCommand(15));
+        swerve = new SwerveSubsystem();
     }
 
+
+    /**
+     * This method is called every 20 ms, no matter the mode. Use this for items like diagnostics
+     * that you want ran during disabled, autonomous, teleoperated and test.
+     *
+     * <p>This runs after the mode specific periodic methods, but before LiveWindow and
+     * SmartDashboard integrated updating.
+     */
     @Override
-    public void robotPeriodic() {
+    public void robotPeriodic()
+    {
+        // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+        // commands, running already-scheduled commands, removing finished or interrupted commands,
+        // and running subsystem periodic() methods.  This must be called from the robot's periodic
+        // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
     }
 
+
+    /** This method is called once each time the robot enters Disabled mode. */
     @Override
-    public void disabledInit() {
-    }
+    public void disabledInit() {}
+
 
     @Override
-    public void autonomousInit() {
-        autonomousCommand = chooser.getSelected();
-        if (autonomousCommand != null) {
+    public void disabledPeriodic() {}
+
+
+    /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+    @Override
+    public void autonomousInit()
+    {
+        autonomousCommand = robotContainer.getAutonomousCommand();
+
+        // schedule the autonomous command (example)
+        if (autonomousCommand != null)
+        {
             autonomousCommand.schedule();
         }
     }
 
+
+    /** This method is called periodically during autonomous. */
     @Override
-    public void teleopInit() {
-        if (autonomousCommand != null) {
+    public void autonomousPeriodic() {}
+
+
+    @Override
+    public void teleopInit()
+    {
+        // This makes sure that the autonomous stops running when
+        // teleop starts running. If you want the autonomous to
+        // continue until interrupted by another command, remove
+        // this line or comment it out.
+        if (autonomousCommand != null)
+        {
             autonomousCommand.cancel();
         }
     }
 
+
+    /** This method is called periodically during operator control. */
     @Override
-    public void testInit() {
+    public void teleopPeriodic() {}
+
+
+    @Override
+    public void testInit()
+    {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
 
+
+    /** This method is called periodically during test mode. */
+    @Override
+    public void testPeriodic() {}
+
+
+    /** This method is called once when the robot is first started up. */
+    @Override
+    public void simulationInit() {}
+
+
+    /** This method is called periodically whilst in simulation. */
+    @Override
+    public void simulationPeriodic() {}
+
+    public static SwerveSubsystem getSwerve() {
+        if (swerve == null) {
+            swerve = new SwerveSubsystem();
+        }
+        return swerve;
+    }
 }
