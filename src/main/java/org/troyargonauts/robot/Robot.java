@@ -34,10 +34,10 @@ public class Robot extends TimedRobot
     public void robotInit()
     {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-        // autonomous chooser on the dashboard.
-        robotContainer = new RobotContainer();
+        // autonomous chooser on the dashboard
 
         swerve = new SwerveSubsystem();
+        robotContainer = new RobotContainer();
     }
 
 
