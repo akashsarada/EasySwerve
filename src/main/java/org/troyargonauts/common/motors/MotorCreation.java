@@ -38,6 +38,8 @@ public final class MotorCreation {
 
         public boolean ENABLE_VOLTAGE_COMPENSATION;
         public double NOMINAL_VOLTAGE;
+        public int CURRENT_LIMIT;
+        public boolean BURN_FLASH;
     }
 
     public static final SparkConfiguration DEFAULT_SPARK_CONFIG = new SparkConfiguration() {
@@ -52,6 +54,8 @@ public final class MotorCreation {
             CLOSED_LOOP_RAMP_RATE = 0.0;
             ENABLE_VOLTAGE_COMPENSATION = false;
             NOMINAL_VOLTAGE = 12.0;
+            CURRENT_LIMIT = 40;
+            BURN_FLASH = true;
         }
     };
 
@@ -67,8 +71,52 @@ public final class MotorCreation {
             CLOSED_LOOP_RAMP_RATE = 0.0;
             ENABLE_VOLTAGE_COMPENSATION = false;
             NOMINAL_VOLTAGE = 12.0;
+            CURRENT_LIMIT = 40;
+            BURN_FLASH = true;
         }
     };
+
+    public static final SparkConfiguration DRIVE_SWERVE_SPARK_CONFIG = new SparkConfiguration() {
+        {
+            IDLE_MODE = CANSparkMax.IdleMode.kBrake;
+            INVERTED = false;
+            STATUS_FRAME_0_RATE_MS = 10;
+            STATUS_FRAME_1_RATE_MS = 1000;
+            STATUS_FRAME_2_RATE_MS = 1000;
+            OPEN_LOOP_RAMP_RATE = 0.0;
+            CLOSED_LOOP_RAMP_RATE = 0.0;
+            ENABLE_VOLTAGE_COMPENSATION = false;
+            NOMINAL_VOLTAGE = 12.0;
+            CURRENT_LIMIT = 50;
+            BURN_FLASH = true;
+        }
+
+    };
+
+    public static final SparkConfiguration TURN_SWERVE_SPARK_CONFIG = new SparkConfiguration() {
+        {
+            IDLE_MODE = CANSparkMax.IdleMode.kBrake;
+            INVERTED = false;
+            STATUS_FRAME_0_RATE_MS = 10;
+            STATUS_FRAME_1_RATE_MS = 1000;
+            STATUS_FRAME_2_RATE_MS = 1000;
+            OPEN_LOOP_RAMP_RATE = 0.0;
+            CLOSED_LOOP_RAMP_RATE = 0.0;
+            ENABLE_VOLTAGE_COMPENSATION = false;
+            NOMINAL_VOLTAGE = 12.0;
+            CURRENT_LIMIT = 20;
+            BURN_FLASH = true;
+        }
+
+    };
+
+    public static LazyCANSparkMax createDriveSwerveSparkMax(int port) {
+        return createSparkMax(port, DRIVE_SWERVE_SPARK_CONFIG);
+    }
+
+    public static LazyCANSparkMax createTurnSwerveSparkMax(int port) {
+        return createSparkMax(port, TURN_SWERVE_SPARK_CONFIG);
+    }
 
     public static LazyCANSparkMax createDefaultSparkMax(int port) {
         return createSparkMax(port, DEFAULT_SPARK_CONFIG);
@@ -91,11 +139,16 @@ public final class MotorCreation {
         sparkMax.setInverted(config.INVERTED);
         handleCANError(port, sparkMax.setOpenLoopRampRate(config.OPEN_LOOP_RAMP_RATE), "set open loop ramp");
         handleCANError(port, sparkMax.setClosedLoopRampRate(config.CLOSED_LOOP_RAMP_RATE), "set closed loop ramp");
+        handleCANError(port, sparkMax.setSmartCurrentLimit(config.CURRENT_LIMIT), "set current limit");
 
         if (config.ENABLE_VOLTAGE_COMPENSATION) {
             handleCANError(port, sparkMax.enableVoltageCompensation(config.NOMINAL_VOLTAGE), "voltage compensation");
         } else {
             handleCANError(port, sparkMax.disableVoltageCompensation(), "voltage compensation");
+        }
+
+        if (config.BURN_FLASH) {
+            handleCANError(port, sparkMax.burnFlash(), "burn flash");
         }
 
         return sparkMax;
@@ -313,4 +366,3 @@ public final class MotorCreation {
         return createTalonFX(canID, DRIVE_TALON, isSlave);
     }
 }
-
