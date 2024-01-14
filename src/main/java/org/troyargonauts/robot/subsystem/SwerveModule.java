@@ -1,11 +1,11 @@
-package org.troyargonauts.robot.subsystems;
+package org.troyargonauts.robot.subsystem;
 
 import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
 import org.troyargonauts.robot.Constants.DriveConstants;
 import org.troyargonauts.robot.Constants.ModuleConstants;
 
-import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkAbsoluteEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,8 +31,8 @@ public class SwerveModule {
         turningMotor.getEncoder().setPositionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad);
         turningMotor.getEncoder().setVelocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec);
 
-        turningMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).setPositionConversionFactor(ModuleConstants.kAbsoluteEncoderRot2Rad);
-        turningMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).setInverted(absoluteEncoderReversed);
+        turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setPositionConversionFactor(ModuleConstants.kAbsoluteEncoderRot2Rad);
+        turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(absoluteEncoderReversed);
 
         turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
@@ -61,7 +61,7 @@ public class SwerveModule {
     }
 
     public double getAbsoluteEncoderRad() {
-        return turningMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
+        return turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).getPosition();
     }
 
     public void resetEncoders() {

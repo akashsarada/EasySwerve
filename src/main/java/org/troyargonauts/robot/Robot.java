@@ -8,7 +8,7 @@ package org.troyargonauts.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.troyargonauts.robot.subsystems.SwerveSubsystem;
+import org.troyargonauts.robot.subsystem.SwerveSubsystem;
 
 
 /**
@@ -23,7 +23,7 @@ public class Robot extends TimedRobot
 
     private RobotContainer robotContainer;
 
-    private static SwerveSubsystem swerve;
+    public static SwerveSubsystem swerve;
 
 
     /**

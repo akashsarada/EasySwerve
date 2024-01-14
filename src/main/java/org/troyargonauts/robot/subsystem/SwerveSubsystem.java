@@ -1,8 +1,8 @@
-package org.troyargonauts.robot.subsystems;
+package org.troyargonauts.robot.subsystem;
 
 import org.troyargonauts.robot.Constants.DriveConstants;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveSubsystem extends SubsystemBase {
-    private final org.troyargonauts.robot.subsystems.SwerveModule frontLeft = new org.troyargonauts.robot.subsystems.SwerveModule(
+    private final org.troyargonauts.robot.subsystem.SwerveModule frontLeft = new org.troyargonauts.robot.subsystem.SwerveModule(
             DriveConstants.kFrontLeftDriveMotorPort,
             DriveConstants.kFrontLeftTurningMotorPort,
             DriveConstants.kFrontLeftDriveEncoderReversed,
@@ -22,7 +22,7 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed
     );
 
-    private final org.troyargonauts.robot.subsystems.SwerveModule frontRight = new org.troyargonauts.robot.subsystems.SwerveModule(
+    private final org.troyargonauts.robot.subsystem.SwerveModule frontRight = new org.troyargonauts.robot.subsystem.SwerveModule(
             DriveConstants.kFrontRightDriveMotorPort,
             DriveConstants.kFrontRightTurningMotorPort,
             DriveConstants.kFrontRightDriveEncoderReversed,
@@ -30,7 +30,7 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kFrontRightDriveAbsoluteEncoderReversed
     );
 
-    private final org.troyargonauts.robot.subsystems.SwerveModule backLeft = new org.troyargonauts.robot.subsystems.SwerveModule(
+    private final org.troyargonauts.robot.subsystem.SwerveModule backLeft = new org.troyargonauts.robot.subsystem.SwerveModule(
             DriveConstants.kBackLeftDriveMotorPort,
             DriveConstants.kBackLeftTurningMotorPort,
             DriveConstants.kBackLeftDriveEncoderReversed,
@@ -38,7 +38,7 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackLeftDriveAbsoluteEncoderReversed
     );
 
-    private final org.troyargonauts.robot.subsystems.SwerveModule backRight = new org.troyargonauts.robot.subsystems.SwerveModule(
+    private final org.troyargonauts.robot.subsystem.SwerveModule backRight = new org.troyargonauts.robot.subsystem.SwerveModule(
             DriveConstants.kBackRightDriveMotorPort,
             DriveConstants.kBackRightTurningMotorPort,
             DriveConstants.kBackRightDriveEncoderReversed,
@@ -67,7 +67,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-        return Math.IEEEremainder(gyro.getYaw(), 360);
+        return Math.IEEEremainder(gyro.getAngle(), 360);
     }
 
     public Rotation2d getRotation2d() {
