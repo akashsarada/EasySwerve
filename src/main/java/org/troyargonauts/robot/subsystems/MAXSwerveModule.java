@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
-import com.revrobotics.SparkAbsoluteEncoder.Type;
 import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
 import org.troyargonauts.robot.Constants.*;

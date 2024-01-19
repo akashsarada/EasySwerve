@@ -5,7 +5,6 @@
 package org.troyargonauts.robot;
 
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
