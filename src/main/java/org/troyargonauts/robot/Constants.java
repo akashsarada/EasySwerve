@@ -43,9 +43,9 @@ public final class Constants {
             new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2));
 
     // Angular offsets of the modules relative to the chassis in radians
-    double FRONT_LEFT_STARTING_OFFSET = -Math.PI / 2;
+    double FRONT_LEFT_STARTING_OFFSET = 0;
     double FRONT_RIGHT_STARTING_OFFSET = 0;
-    double BACK_LEFT_STARTING_OFFSET = Math.PI;
+    double BACK_LEFT_STARTING_OFFSET = Math.PI/2;
     double BACK_RIGHT_STARTING_OFFSET = Math.PI / 2;
 
     // SPARK MAX CAN IDs
@@ -103,7 +103,7 @@ public final class Constants {
     double DRIVING_MIN_OUTPUT = -1;
     double DRIVING_MAX_OUTPUT = 1;
 
-    double TURNING_P = 1;
+    double TURNING_P = 0.25;
     double TURNING_I = 0;
     double TURNING_D = 0;
     double TURNING_FF = 0;
