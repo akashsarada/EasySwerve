@@ -89,7 +89,7 @@ public class Swerve extends SubsystemBase {
         });
 
     //Put Data to SmartDashboard
-    SmartDashboard.putNumber("Gyro Angle", getHeading());
+    SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
   }
 
   /**
