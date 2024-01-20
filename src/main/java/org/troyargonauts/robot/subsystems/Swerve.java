@@ -26,6 +26,7 @@ import org.troyargonauts.robot.Robot;
 
 
 public class Swerve extends SubsystemBase {
+
   // Create MAXSwerveModules
   private final MAXSwerveModule frontLeft = new MAXSwerveModule(
       DriveConstants.FRONT_LEFT_DRIVING_CAN_ID,
@@ -58,6 +59,7 @@ public class Swerve extends SubsystemBase {
   private final SlewRateLimiter magLimiter = new SlewRateLimiter(DriveConstants.MAGNITUDE_SLEW_RATE);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(DriveConstants.ROTATIONAL_SLEW_RATE);
   private double prevTime = WPIUtilJNI.now() * 1e-6;
+
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry odometry = new SwerveDriveOdometry(
