@@ -2,13 +2,13 @@ package org.troyargonauts.common.util.imu;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-public class Pigeon extends  Pigeon2{
+public class Pigeon extends Pigeon2{
     /**
      * Creates the Pigeon object with the specified CAN ID
      *
      * @param canID - the CAN ID of the Pigeon
      */
-    private Pigeon(int canID) {
+    public Pigeon(int canID) {
         super(canID);
     }
 
@@ -24,7 +24,7 @@ public class Pigeon extends  Pigeon2{
      * @return the Pigeon's angle relative to last reset
      */
     public double getAngle() {
-        return (this.getYaw().getValue() % 360);
+        return (this.getYaw().getValueAsDouble() % 360);
     }
 
     /**
