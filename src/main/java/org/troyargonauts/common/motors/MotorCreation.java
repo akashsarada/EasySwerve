@@ -2,14 +2,12 @@ package org.troyargonauts.common.motors;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
-import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.*;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
@@ -60,7 +58,7 @@ public final class MotorCreation {
         }
     };
 
-    private static final SparkConfiguration SLAVE_SPARK_CONFIG = new SparkConfiguration() {
+    public static final SparkConfiguration SLAVE_SPARK_CONFIG = new SparkConfiguration() {
         {
             BURN_FACTORY_DEFAULT_FLASH = false;
             IDLE_MODE = CANSparkMax.IdleMode.kCoast;
@@ -352,14 +350,12 @@ public final class MotorCreation {
     public static LazyTalonFX<TalonFX> createDefaultTalonFX(final int canID) {
         TalonFX talon = new TalonFX(canID);
         configureTalon(talon, DEFAULT_TALON_CONFIG);
-//        talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, TIMEOUT_MS);
         return new LazyTalonFX<>(talon);
     }
 
     public static LazyTalonFX<TalonFX> createTalonFX(final int canID, final TalonConfiguration configuration, final boolean isSlave) {
         TalonFX talon = new TalonFX(canID);
         configureTalon(talon, configuration);
-//        talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, TIMEOUT_MS);
         return new LazyTalonFX<>(talon);
     }
 
