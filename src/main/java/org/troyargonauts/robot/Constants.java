@@ -45,15 +45,15 @@ public final class Constants {
         new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2));
 
     // SPARK MAX CAN IDs
-    int FRONT_LEFT_DRIVING_CAN_ID = 11;
-    int REAR_LEFT_DRIVING_CAN_ID = 13;
-    int FRONT_RIGHT_DRIVING_CAN_ID = 15;
-    int REAR_RIGHT_DRIVING_CAN_ID = 17;
+    int FRONT_LEFT_DRIVING_CAN_ID = 1;
+    int REAR_LEFT_DRIVING_CAN_ID = 5;
+    int FRONT_RIGHT_DRIVING_CAN_ID = 3;
+    int REAR_RIGHT_DRIVING_CAN_ID = 7;
 
-    int FRONT_LEFT_TURNING_CAN_ID = 10;
-    int REAR_LEFT_TURNING_CAN_ID = 12;
-    int FRONT_RIGHT_TURNING_CAN_ID = 14;
-    int REAR_RIGHT_TURNING_CAN_ID = 16;
+    int FRONT_LEFT_TURNING_CAN_ID = 2;
+    int REAR_LEFT_TURNING_CAN_ID = 6;
+    int FRONT_RIGHT_TURNING_CAN_ID = 4;
+    int REAR_RIGHT_TURNING_CAN_ID = 8;
 
     boolean GYRO_REVERSED = false;
   }
