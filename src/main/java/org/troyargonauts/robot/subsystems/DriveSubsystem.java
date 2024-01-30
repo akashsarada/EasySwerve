@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.troyargonauts.common.util.imu.Pigeon;
 import org.troyargonauts.robot.Constants.*;
 import org.troyargonauts.common.swerve.*;
@@ -79,6 +80,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+
+    SmartDashboard.putNumber("Gyro Angle", m_gyro.getAngle());
   }
 
   /**
@@ -221,7 +224,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    m_gyro.reset();
+    m_gyro.setYaw(0);
   }
 
   /**
@@ -241,4 +244,29 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
+  public double getForwardEncoder() {
+    return (-(m_frontLeft.getPosition().distanceMeters + m_frontRight.getPosition().distanceMeters + m_rearLeft.getPosition().distanceMeters + m_rearRight.getPosition().distanceMeters) / 4);
+  }
+
+  public double getStrafeEncoder() {
+    return ((m_frontLeft.getPosition().distanceMeters - m_frontRight.getPosition().distanceMeters - m_rearLeft.getPosition().distanceMeters + m_rearRight.getPosition().distanceMeters) / 4);
+  }
+
+  public double getFLEncoder(){
+    return m_frontLeft.getPosition().distanceMeters;
+  }
+
+  public double getFREncoder(){
+    return m_frontLeft.getPosition().distanceMeters;
+  }
+
+  public double getBLEncoder(){
+    return m_rearLeft.getPosition().distanceMeters;
+  }
+
+  public double getBREncoder(){
+    return m_rearRight.getPosition().distanceMeters;
+  }
 }
+

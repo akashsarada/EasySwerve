@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.troyargonauts.robot.subsystems.*;
 import org.troyargonauts.robot.Constants.*;
+import org.troyargonauts.robot.subsystems.DriveSubsystem;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
+
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -43,6 +45,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    m_robotDrive.zeroHeading();
+    m_robotDrive.resetEncoders();
+
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -117,5 +123,9 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+  }
+
+  public DriveSubsystem getDriveSubsystem(){
+    return m_robotDrive;
   }
 }

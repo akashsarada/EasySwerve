@@ -139,4 +139,14 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public interface RotateConstants{
+    double ROTATE_P = 0.001;
+
+    double ROTATE_I = 0;
+
+    double ROTATE_D = 0;
+    double TURN_TOLERANCE_DEG = 0;
+    double TURN_RATE_TOLERANCE_DEG_PER_SEC = 0;
+  }
 }
